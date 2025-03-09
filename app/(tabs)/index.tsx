@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -9,10 +9,11 @@ import {
 } from 'react-native';
 import { StarBackground } from '@/components/Atoms/StarBackground';
 import AddDreamModal from '@/components/organisms/AddDreamModal';
-import { Dream } from '@/interfaces/IDreams';
+import { useDreams } from '@/hooks/useDreams';
 
 const HomeScreen = () => {
   const [isModalVisible, setModalVisible] = useState(false);
+  const { dreams, addDream } = useDreams(); // Usamos el hook aquí
 
   const getCurrentDate = () => {
     const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
@@ -21,29 +22,9 @@ const HomeScreen = () => {
     return `${days[now.getDay()]}, ${now.getDate()} de ${months[now.getMonth()]} de ${now.getFullYear()}`;
   };
 
-  const [dreams, setDreams] = useState<Dream[]>([]);
-
-  // Cargar los sueños desde localStorage al cargar el componente
-  useEffect(() => {
-    const storedDreams = localStorage.getItem('dreams');
-    if (storedDreams) {
-      const parsedDreams = JSON.parse(storedDreams);
-      setDreams(parsedDreams);
-      console.log('Sueños almacenados:', parsedDreams); // Aquí hacemos el console.log
-    }
-  }, []);
-  
-
-  // Guardar los sueños en localStorage cada vez que cambian
-  useEffect(() => {
-    if (dreams.length > 0) {
-      localStorage.setItem('dreams', JSON.stringify(dreams));
-    }
-  }, [dreams]);
-
-  const handleAddDream = (dream: Dream) => {
-    setDreams(prevDreams => [...prevDreams, dream]);
-    setModalVisible(false);  // Close the modal after saving the dream
+  const handleAddDream = (dream) => {
+    addDream(dream); // Guardamos el sueño con el hook
+    setModalVisible(false);
   };
 
   return (
@@ -63,34 +44,26 @@ const HomeScreen = () => {
         <View style={{ alignItems: 'center', marginVertical: 20 }}>
           <Text style={{ fontSize: 18, color: '#a9c2cb' }}>{getCurrentDate()}</Text>
         </View>
-        <View style={{
-          backgroundColor: 'rgba(255,255,255,0.05)',
-          borderRadius: 15,
-          padding: 20,
-          marginVertical: 20,
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.2,
-          shadowRadius: 5,
-          elevation: 5,
-          borderLeftWidth: 4,
-          borderLeftColor: '#5c6bc0',
-        }}>
-          <Text style={{
-            fontSize: 17,
-            lineHeight: 24,
-            fontStyle: 'italic',
-            color: '#fff',
-          }}>
-            "Los sueños son la poesía del inconsciente. Escúchalos con atención, pues contienen sabiduría que tu mente consciente aún no ha descubierto."
+
+        {/* LISTA DE SUEÑOS */}
+        {dreams.length > 0 ? (
+          dreams.map((dream, index) => (
+            <View key={index} style={{
+              backgroundColor: 'rgba(255,255,255,0.1)',
+              padding: 15,
+              borderRadius: 10,
+              marginVertical: 5,
+            }}>
+              <Text style={{ color: '#fff', fontSize: 16 }}>{dream.title}</Text>
+              <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 14 }}>{dream.description}</Text>
+            </View>
+          ))
+        ) : (
+          <Text style={{ color: 'rgba(255,255,255,0.5)', textAlign: 'center', marginTop: 20 }}>
+            No hay sueños guardados aún.
           </Text>
-          <Text style={{
-            marginTop: 10,
-            fontSize: 14,
-            color: 'rgba(255,255,255,0.8)',
-            textAlign: 'right',
-          }}>— Carl Jung</Text>
-        </View>
+        )}
+
         <TouchableOpacity 
           style={{
             backgroundColor: '#5c6bc0',
@@ -99,11 +72,6 @@ const HomeScreen = () => {
             paddingHorizontal: 30,
             marginVertical: 30,
             alignSelf: 'center',
-            shadowColor: 'rgba(92, 107, 192, 0.3)',
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.3,
-            shadowRadius: 5,
-            elevation: 5,
           }}
           onPress={() => setModalVisible(true)}
         >
