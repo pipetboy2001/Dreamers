@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -21,9 +21,25 @@ const HomeScreen = () => {
     return `${days[now.getDay()]}, ${now.getDate()} de ${months[now.getMonth()]} de ${now.getFullYear()}`;
   };
 
-
-
   const [dreams, setDreams] = useState<Dream[]>([]);
+
+  // Cargar los sueños desde localStorage al cargar el componente
+  useEffect(() => {
+    const storedDreams = localStorage.getItem('dreams');
+    if (storedDreams) {
+      const parsedDreams = JSON.parse(storedDreams);
+      setDreams(parsedDreams);
+      console.log('Sueños almacenados:', parsedDreams); // Aquí hacemos el console.log
+    }
+  }, []);
+  
+
+  // Guardar los sueños en localStorage cada vez que cambian
+  useEffect(() => {
+    if (dreams.length > 0) {
+      localStorage.setItem('dreams', JSON.stringify(dreams));
+    }
+  }, [dreams]);
 
   const handleAddDream = (dream: Dream) => {
     setDreams(prevDreams => [...prevDreams, dream]);
