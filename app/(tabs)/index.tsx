@@ -9,46 +9,10 @@ import {
 } from 'react-native';
 import { StarBackground } from '@/components/Atoms/StarBackground';
 import AddDreamModal from '@/components/organisms/AddDreamModal';
-
-const EmotionChip = ({ label, onToggle, selected }) => {
-  return (
-    <TouchableOpacity
-      style={{
-        paddingVertical: 8,
-        paddingHorizontal: 15,
-        backgroundColor: selected ? 'rgba(92, 107, 192, 0.2)' : 'rgba(255,255,255,0.05)',
-        borderRadius: 20,
-        borderWidth: 1,
-        borderColor: selected ? '#5c6bc0' : 'rgba(255,255,255,0.1)',
-        margin: 5,
-      }}
-      onPress={onToggle}
-    >
-      <Text style={{ color: '#fff', fontSize: 14 }}>{label}</Text>
-    </TouchableOpacity>
-  );
-};
+import { Dream } from '@/interfaces/IDreams';
 
 const HomeScreen = () => {
-  const [showForm, setShowForm] = useState(false);
-  const [dreamDate, setDreamDate] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [dreamTitle, setDreamTitle] = useState('');
-  const [dreamDescription, setDreamDescription] = useState('');
-  const [dreamType, setDreamType] = useState('');
-  const [showPicker, setShowPicker] = useState(false);
-  const [emotions, setEmotions] = useState([
-    { id: 1, label: '😊 Felicidad', selected: false },
-    { id: 2, label: '😢 Tristeza', selected: false },
-    { id: 3, label: '😨 Miedo', selected: false },
-    { id: 4, label: '😡 Enojo', selected: false },
-    { id: 5, label: '😲 Sorpresa', selected: false },
-    { id: 6, label: '😌 Calma', selected: false },
-    { id: 7, label: '🤔 Confusión', selected: false },
-    { id: 8, label: '😳 Vergüenza', selected: false },
-  ]);
   const [isModalVisible, setModalVisible] = useState(false);
-  const [dreams, setDreams] = useState<string[]>([]);
 
   const getCurrentDate = () => {
     const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
@@ -57,24 +21,13 @@ const HomeScreen = () => {
     return `${days[now.getDay()]}, ${now.getDate()} de ${months[now.getMonth()]} de ${now.getFullYear()}`;
   };
 
-  const toggleEmotion = (id) => {
-    setEmotions(emotions.map(emotion => 
-      emotion.id === id ? { ...emotion, selected: !emotion.selected } : emotion
-    ));
-  };
 
-  const saveDream = () => {
-    alert('¡Sueño guardado con éxito!');
-    setShowForm(false);
-    setDreamTitle('');
-    setDreamDescription('');
-    setDreamType('');
-    setEmotions(emotions.map(emotion => ({ ...emotion, selected: false })));
-  };
 
-  const handleAddDream = (dream: string) => {
-    setDreams((prevDreams) => [...prevDreams, dream]);
-    setModalVisible(false);
+  const [dreams, setDreams] = useState<Dream[]>([]);
+
+  const handleAddDream = (dream: Dream) => {
+    setDreams(prevDreams => [...prevDreams, dream]);
+    setModalVisible(false);  // Close the modal after saving the dream
   };
 
   return (
@@ -144,13 +97,13 @@ const HomeScreen = () => {
             fontWeight: '500',
             textAlign: 'center',
           }}>
-            {showForm ? '✖ Cancelar' : '✨ Registrar nuevo sueño'}
+            ✨ Registrar nuevo sueño
           </Text>
         </TouchableOpacity>
         <AddDreamModal
           visible={isModalVisible}
           onClose={() => setModalVisible(false)}
-          onAddDream={handleAddDream}
+          onSave={handleAddDream}
         />
       </ScrollView>
     </SafeAreaView>
