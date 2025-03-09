@@ -6,12 +6,15 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
 import { useAuth } from '@/hooks/useAuth';
+import { Appearance, useColorScheme } from 'react-native';
+import "../global.css"
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const { isAuthenticated } = useAuth();
   const [appIsReady, setAppIsReady] = useState(false);
+  const colorScheme = useColorScheme();
 
   useEffect(() => {
     if (isAuthenticated !== null) {
@@ -22,10 +25,8 @@ export default function RootLayout() {
 
   if (!appIsReady) return null;
 
-  
-
   return (
-    <ThemeProvider value={DefaultTheme}>
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
         {isAuthenticated ? (
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
