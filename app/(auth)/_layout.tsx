@@ -11,15 +11,22 @@ export default function TabLayout() {
         tabBarStyle: Platform.select({
           ios: {
             position: 'absolute',
+            backgroundColor: '#1a1a2e',
           },
-          default: {},
+          default: {
+            backgroundColor: '#1a1a2e',
+          },
         }),
-      }}>
+        tabBarLabelStyle: {
+          color: '#ffffff', // Cambia el color del texto a blanco
+        },
+      }}
+    >
       <Tabs.Screen
         name="login"
         options={{
-          title: 'Login',
-          headerShown: false, 
+          title: '🔑 Login',
+          headerShown: false,
         }}
       />
     </Tabs>
