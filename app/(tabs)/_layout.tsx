@@ -4,48 +4,46 @@ import { Platform } from 'react-native';
 
 export default function TabLayout() {
   return (
-    <Tabs
+  <Tabs
       initialRouteName="index"
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#000',
-        tabBarInactiveTintColor: '#ccc',
-        tabBarStyle: {
-          backgroundColor: '#fff',
-          borderTopColor: '#ccc',
-          borderTopWidth: Platform.OS === 'ios' ? 1 : 0,
-        },
+        tabBarStyle: Platform.select({
+         ios: {
+          position: 'absolute',
+          backgroundColor: '#1a1a2e',
+         },
+         default: {
+          backgroundColor: '#1a1a2e',
+         },
+        }),
         tabBarLabelStyle: {
-          fontSize: 14,
-          fontWeight: 'bold',
+         color: '#ffffff', // Cambia el color del texto a blanco
         },
-        tabBarIconStyle: {
-          width: 20,
-          height: 20,
-        },
-        
-      }}>
-      <Tabs.Screen
-        name="calendar"
-        options={{
-          title: 'Calendar',
-          headerShown: false 
-        }}
-      />
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          headerShown: false 
-        }}
-      />
-      <Tabs.Screen
-        name="ConfigApp"
-        options={{
-          title: 'Settings',
-          headerShown: false 
-        }}
-      />
-    </Tabs>
+      }}
+     >
+
+    <Tabs.Screen
+      name="Calendar"
+      options={{
+       title: '📅 Calendario',
+       headerShown: false 
+      }}
+    />
+    <Tabs.Screen
+      name="index"
+      options={{
+       title: '🏠 Home',
+       headerShown: false 
+      }}
+    />
+    <Tabs.Screen
+      name="ConfigApp"
+      options={{
+       title: '⚙️ Configuración',
+       headerShown: false 
+      }}
+    />
+   </Tabs>
   );
 }
